@@ -1,4 +1,4 @@
-(defvar *question* '((1 "Un controle va avoir lieu bientot. Comment le préparez vous ?" ((1 "J'étudie beaucoup" ((hardi 2)))(2 "Au dernier instant" ((relax 2)))(3 "Je m'amuse" ((malin 2)))))
+(defvar *questions* '((1 "Un controle va avoir lieu bientot. Comment le préparez vous ?" ((1 "J'étudie beaucoup" ((hardi 2)))(2 "Au dernier instant" ((relax 2)))(3 "Je m'amuse" ((malin 2)))))
                      (2 "Est ce que vous pouvez vous concentrer sur quelque chose que vous aimez ?" ((1 "Oui" ((hardi 2) (docile 1)))(2 "Non" ((bizarre 2)))))
                      (3 "Dans les moments difficiles, est ce que vous vous accrochez ?" ((1 "Oui" ((hardi 2) (brave 2))) (2 "Non" ((malpoli 2) (bizarre 2)))))
                      (4 "Voici un seau. Si vous mettez de l'eau dedans, vous le remplissez..." ((1 "A ras" ((hardi 2)))(2 "A demi" ((calme 2)))(3 "Un peu" ((bizarre 2)))))
@@ -76,5 +76,36 @@
                      (Skitty () (pressé))
                      )
   )
+ 
+ 
 
+ ;;fonctions de services
+ 
+(defun choix_question (num *questions*)
+ (nth (- num 1) *questions*)
+ )
 
+ 
+ (defun number-of-elements (liste)
+  (if (null  liste)
+   0
+   (+ 1 (number-of-elements (rest liste))))
+  )
+ 
+ 
+ (defun nb_rep (question)
+  (number-of-elements (caddr question))
+  )
+ 
+ 
+ (defun affiche_question (question)
+  (format t "~% ~s - ~s" (car question) (cadr question))
+  (loop for rep in (caddr question)
+   do
+   (format t "~%     ~s : ~s" (car rep) (cadr rep))
+   )
+  )
+ 
+ 
+ 
+ ;;; Exemple (affiche_question (choix_question 1 *questions*))

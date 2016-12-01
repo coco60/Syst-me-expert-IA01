@@ -79,33 +79,67 @@
  
  
 
- ;;fonctions de services
+;;fonctions de services
  
+;retourne la question correspondant a un numero
 (defun choix_question (num *questions*)
  (nth (- num 1) *questions*)
  )
-
  
- (defun number-of-elements (liste)
+;fonction basique retournant le nombre d'element d une liste
+(defun number-of-elements (liste)
   (if (null  liste)
    0
    (+ 1 (number-of-elements (rest liste))))
   )
  
+;retourne le nombre de reponses d une question
+(defun nb_rep (question)
+ (number-of-elements (caddr question))
+ )
  
- (defun nb_rep (question)
-  (number-of-elements (caddr question))
+;affiche une question avec ses reponses possibles
+(defun affiche_question (question)
+ (format t "~% ~s - ~s" (car question) (cadr question))
+ (loop for rep in (caddr question)
+  do
+  (format t "~%     ~s : ~s" (car rep) (cadr rep))
   )
+ )
  
+;recoit la reponse de l utilisateur a une question
+(defun get_reponse (question)
+ (let (reponse)
+  (setq reponse (parse-integer (read-line)))
+  (cond
+   ((while (or (> reponse (nb_rep question))(< reponse 1))
+     (format t "~% Veuillez entrez une reponse valide ~%")
+     (setq reponse (parse-integer (read-line))))
+    ))
+  (return-from get_reponse reponse)
+  )
+ )
  
- (defun affiche_question (question)
-  (format t "~% ~s - ~s" (car question) (cadr question))
-  (loop for rep in (caddr question)
+;retourne la liste de caracteres d une question avec leur points
+(defun get_caracs (question)
+ (setq lrep '())
+  (loop for repo in (caddr question)
    do
-   (format t "~%     ~s : ~s" (car rep) (cadr rep))
+   (setq lrep (append lrep (caddr repo)))
    )
+  (return-from get_caracs lrep)
   )
  
  
  
- ;;; Exemple (affiche_question (choix_question 1 *questions*))
+ 
+ 
+ ;;; TEST
+ 
+ (setq l (choix_question 31 *questions*))
+ (affiche_question l)
+ (get_reponse l)
+ (get_caracs l)
+ 
+ (setq rep (caddr l))
+ (caddr (car rep))

@@ -110,7 +110,7 @@
 ;recoit la reponse de l utilisateur a une question
 (defun get_reponse (question)
  (let (reponse)
-  (setq reponse (parse-integer (read-line)))
+  (setq reponse 0)
   (cond
    ((while (or (> reponse (nb_rep question))(< reponse 1))
      (format t "~% Veuillez entrez une reponse valide ~%")
@@ -140,20 +140,25 @@
    (return-from get_caracs lrep)
    )
   
-  ;marche que pour 1 seul caractere en parametre : a modifier !!!!!!!
-  (defun questions_sans_carac (lcaracs)
-   (setq lquest '())
-    (loop for quest in *questions*
-     do
-     (loop for carac in lcaracs
-      do
-      (if (not (member carac (get_caracs (get_caracs_pts quest))))
-       (setq lquest (append lquest (list quest)))
-       )
+(defun questions_sans_carac (lcaracs)
+  (let ((lquest) (qfinal))
+    (dolist(q *questions*)
+      (push (car q) lquest)
       )
-     )
-    (return-from questions_sans_carac lquest)
+    (dolist(cr lcaracs)
+      (dolist(q lquest)
+      (if (not( null(member cr (get_caracs (get_caracs_pts (choix_question q *questions*))))))
+          (setq lquest (remove q lquest))
+        )
+        )
+      )
+    (loop for q in lquest
+        do
+          (push (choix_question q *questions*) qfinal)
+          )
+    (return-from questions_sans_carac qfinal)
     )
+  )
    
    
    
@@ -166,4 +171,4 @@
    (get_caracs_pts l)
    (get_caracs (get_caracs_pts l))
    (questions_sans_carac '(HARDI))
-       (questions_sans_carac '(HARDI JOVIAL)) ;; NE FONCTIONNE PAS
+   (questions_sans_carac '(hardi jovial naif bizarre docile))

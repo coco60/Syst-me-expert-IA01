@@ -120,26 +120,50 @@
   )
  )
  
-;retourne la liste de caracteres d une question avec leur points
-(defun get_caracs (question)
+ ;retourne la liste de caracteres d une question avec leur points
+(defun get_caracs_pts (question)
  (setq lrep '())
   (loop for repo in (caddr question)
    do
    (setq lrep (append lrep (caddr repo)))
    )
-  (return-from get_caracs lrep)
+  (return-from get_caracs_pts lrep)
   )
  
- 
- 
- 
- 
- ;;; TEST
- 
- (setq l (choix_question 31 *questions*))
- (affiche_question l)
- (get_reponse l)
- (get_caracs l)
- 
- (setq rep (caddr l))
- (caddr (car rep))
+ ;retourne la liste de caracteres d une question sans leur points
+ (defun get_caracs (lrep_pt)
+  (setq lrep '())
+   (loop for r in lrep_pt
+    do
+    (setq lrep (append lrep (list (car r))))
+    )
+   (return-from get_caracs lrep)
+   )
+  
+  ;marche que pour 1 seul caractere en parametre : a modifier !!!!!!!
+  (defun questions_sans_carac (lcaracs)
+   (setq lquest '())
+    (loop for quest in *questions*
+     do
+     (loop for carac in lcaracs
+      do
+      (if (not (member carac (get_caracs (get_caracs_pts quest))))
+       (setq lquest (append lquest (list quest)))
+       )
+      )
+     )
+    (return-from questions_sans_carac lquest)
+    )
+   
+   
+   
+   
+   ;;; TEST
+   
+   (setq l (choix_question 31 *questions*))
+   (affiche_question l)
+   (get_reponse l)
+   (get_caracs_pts l)
+   (get_caracs (get_caracs_pts l))
+   (questions_sans_carac '(HARDI))
+       (questions_sans_carac '(HARDI JOVIAL)) ;; NE FONCTIONNE PAS

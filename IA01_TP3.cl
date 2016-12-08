@@ -159,8 +159,30 @@
     (return-from questions_sans_carac qfinal)
     )
   )
-   
-   
+
+
+;prendre une question au hasard dans une liste
+(defun random_question( lquest)
+  (return-from random_question (nth (random (length lquest)) lquest))
+  )
+
+
+;obtention de la liste possédant les caractéristiques entrées en arguments
+(defun questions_avec_carac (lcaracs)
+  (let ((lquest) (check 0))
+    (dolist(q *questions*)
+      (setq check 0)
+      (dolist(cr lcaracs)
+        (if ( null(member cr (get_caracs (get_caracs_pts (choix_question (car q) *questions*)))))
+            (setq check 1))
+        )
+      (if(equal check 0)
+          (push q lquest)
+        )
+      )
+    (return-from questions_avec_carac (reverse lquest))
+    )
+  )  
    
    
    ;;; TEST
@@ -172,3 +194,5 @@
    (get_caracs (get_caracs_pts l))
    (questions_sans_carac '(HARDI))
    (questions_sans_carac '(hardi jovial naif bizarre docile))
+   (random_question *questions*)
+   (questions_avec_carac '(hardi relax))

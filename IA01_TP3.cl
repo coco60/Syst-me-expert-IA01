@@ -183,8 +183,28 @@
     (return-from questions_avec_carac (reverse lquest))
     )
   )  
-   
-   
+  
+
+;obtention de la liste de question avec seulement les caractères entrées en arguments 
+;Dans notre traitement on pourra peut être avoir besoin de la fonction précédente au cas où aucune question n'est renvoyé ici
+(defun questions_carac_unique (lcaracs)
+  (let ((lquest) (check 0) (longueur 0))
+    (dolist(q *questions*)
+      (setq check 0)
+      (setq longueur (length (get_caracs (get_caracs_pts (choix_question (car q) *questions*)))))
+      (dolist(cr lcaracs)
+        (if ( null(member cr (get_caracs (get_caracs_pts (choix_question (car q) *questions*)))))
+            (setq check 1))
+        )
+      (if(AND (equal check 0) (equal longueur (length lcaracs)))
+          (push q lquest)
+        )
+      )
+    (return-from questions_carac_unique (reverse lquest))
+    )
+  )   
+
+
    ;;; TEST
    
    (setq l (choix_question 31 *questions*))
@@ -196,3 +216,5 @@
    (questions_sans_carac '(hardi jovial naif bizarre docile))
    (random_question *questions*)
    (questions_avec_carac '(hardi relax))
+   (questions_carac_unique '(hardi calme solo))
+   (get_caracs_pts (car (questions_sans_carac '(hardi jovial naif bizarre docile))))

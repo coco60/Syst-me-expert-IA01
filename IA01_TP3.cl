@@ -204,6 +204,47 @@
     )
   )   
 
+;création liste initiale
+(defun liste_carac_init ()
+  (let ((init '((jovial 0)(bizarre 0)(docile 0)(hardi 0)(calme 0)(brave 0)(relax 0)(malin 0)(solo 0)(naïf 0)(timide 0)(malpoli 0)(pressé 0))))
+    (return-from liste_carac_init init)
+    )
+  )
+
+;obtention de caractère en fonction d'une réponse à une question
+(defun carac_reponse (num_reponse question)
+  (let ((carac (caddr(assoc num_reponse (caddr question)))))
+    (return-from carac_reponse carac)
+    )
+  )
+
+:mise à jour liste caractère
+(defun mise_a_jour_carac (liste_carac carac_result)
+  (dolist (carac carac_result)
+    (dolist (c liste_carac)
+          (if(equal (car carac) (car c))(setq c (list (car c) (+ (cadr carac) (cadr c))))
+            )
+          )
+    )
+  (return-from mise_a_jour_carac liste_carac)
+  )
+  
+
+;programme principal
+(defun principale ()
+  (let (( carac_point (liste_carac_init))(carac_question)(deja_posee)(liste_question *questions*)(nb_question 0))
+    
+    (while (<= nb_question 4)
+      (let ((reponse)(question_actuelle)(carac))
+        (setq question_actuelle (random_question liste_question))
+        (push (car question_actuelle) deja_posee)
+        (affiche_question question_actuelle)
+        (setq reponse (get_reponse question_actuelle))
+        (setq carac (carac_reponse))
+        
+        (setq nb_question (+ 1 nb_question))
+      )
+  
 
    ;;; TEST
    

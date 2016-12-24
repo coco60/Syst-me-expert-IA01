@@ -228,6 +228,25 @@
     )
   (return-from mise_a_jour_carac liste_carac)
   )
+   
+;retourne le cractère qui la le plus de points
+(defun max_pts (liste_carac_pts)
+   (setq max (car liste_carac_pts))
+   (dolist (carac liste_carac_pts)
+     (if (< (cadr max) (cadr carac))
+      (setq max carac))
+     )
+ (return-from max_pts max)
+)
+   
+;pose la question du genre
+(defun ask_genre ()
+    (progn
+     (format t "~%Etes vous une fille ou un garçon ?")
+     (format t "~% 1 : Une fille")
+     (format t "~% 2 : Un garçon")
+     )
+    )
   
 
 ;programme principal
@@ -259,3 +278,5 @@
    (questions_avec_carac '(hardi relax))
    (questions_carac_unique '(hardi calme solo))
    (get_caracs_pts (car (questions_sans_carac '(hardi jovial naif bizarre docile))))
+   (setq li '((bizarre 10)(hardi 1)(brave 2)(peureux 5)))
+   (max_pts li)

@@ -218,15 +218,22 @@
     )
   )
 
-:mise à jour liste caractère
+;mise à jour liste caractère
 (defun mise_a_jour_carac (liste_carac carac_result)
+  (let ((resultat))
   (dolist (carac carac_result)
     (dolist (c liste_carac)
-          (if(equal (car carac) (car c))(setq c (list (car c) (+ (cadr carac) (cadr c))))
-            )
-          )
+      (cond 
+       ((equal (car carac) (car c))
+        (setq c (list (car c) (+ (cadr carac) (cadr c))))
+        (push c resultat))
+       ((AND (not (assoc (car c) carac_result))(not( member c resultat)))(push c resultat))
+       (t nil)
+       )
+      )
     )
-  (return-from mise_a_jour_carac liste_carac)
+    (return-from mise_a_jour_carac resultat)
+    )
   )
    
 ;retourne le cractère qui la le plus de points
@@ -280,3 +287,8 @@
    (get_caracs_pts (car (questions_sans_carac '(hardi jovial naif bizarre docile))))
    (setq li '((bizarre 10)(hardi 1)(brave 2)(peureux 5)))
    (max_pts li)
+    
+   (setq init '((bizarre 2)(jovial 0)(docile 0)(hardi 1)(calme 0)(brave 0)(relax 0)(malin 0)(solo 0)(naïf 0)(timide 0)(malpoli 0)(pressé 0)))        
+   (setq init '((bizarre 0)(jovial 0)(docile 0)(hardi 0)(calme 0)(brave 0)))
+   (setq init (mise_a_jour_carac init '((jovial 1)(calme 1))))
+           

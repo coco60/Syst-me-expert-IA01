@@ -256,9 +256,23 @@
     )
   
 
+;mise à jour liste question
+(defun mise_a_jour_question (lquestion question)
+  (let ((resultat))
+  (dolist (q lquestion)
+    (cond 
+     ((not (equal (car q) (car question)))(push q resulat))
+     (t nil)
+     )
+    )
+    (return-from mise_a_jour_carac resultat)
+    )
+  )
+ 
+
 ;programme principal
 (defun principale ()
-  (let (( carac_point (liste_carac_init))(carac_question)(deja_posee)(liste_question *questions*)(nb_question 0))
+  (let (( carac_point '((bizarre 2)(jovial 0)(docile 0)(hardi 1)(calme 0)(brave 0)(relax 0)(malin 0)(solo 0)(naïf 0)(timide 0)(malpoli 0)(pressé 0)))(carac_question)(deja_posee)(liste_question *questions*)(nb_question 0))
     
     (while (<= nb_question 4)
       (let ((reponse)(question_actuelle)(carac))
@@ -266,9 +280,12 @@
         (push (car question_actuelle) deja_posee)
         (affiche_question question_actuelle)
         (setq reponse (get_reponse question_actuelle))
-        (setq carac (carac_reponse))
-        
+        (setq carac (carac_reponse reponse question_actuelle))
+        (setq carac_point (mise_a_jour_carac carac_point carac))
+        (setq liste_question (mise_a_jour_question liste_question question_actuelle))
+        (setq liste_question (questions_sans_carac (carac liste_question)))
         (setq nb_question (+ 1 nb_question))
+        )
       )
   
 

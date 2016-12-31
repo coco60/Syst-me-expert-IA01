@@ -269,7 +269,32 @@
     )
   )
  
-
+;fonction service pour récuperer les 5 questions avec le plus de points
+(defun recup (list_carac N)
+  (let((inter nil )(fin nil)(max)(nb 0))
+    (dolist(elem list_carac)
+      (if(< 0 (cadr elem))
+          (push elem inter)
+        )
+      )
+    (dolist(elem inter)
+      (setq max (max_pts inter))
+      (push max fin)
+      (setq inter (mise_a_jour_question inter max))
+      )
+    (setq inter nil)
+    (if(< (length fin) N)
+        (return-from recup fin)
+      )
+    (dolist (elem (reverse fin))
+       (push elem inter)
+       (setq nb (+ 1 nb))
+       (if(= nb N)
+           (return-from recup (reverse inter))
+         )
+      )
+    )
+  )
 ;programme principal
 (defun principale ()
   (let (( carac_point '((bizarre 2)(jovial 0)(docile 0)(hardi 1)(calme 0)(brave 0)(relax 0)(malin 0)(solo 0)(naïf 0)(timide 0)(malpoli 0)(pressé 0)))(carac_question)(deja_posee)(liste_question *questions*)(nb_question 0))
@@ -287,6 +312,9 @@
         (setq nb_question (+ 1 nb_question))
         )
       )
+    (setq liste_question nil)
+    (setq carac nil)
+    (fonction service) ;8-nb_question
   
 
    ;;; TEST
@@ -308,4 +336,4 @@
    (setq init '((bizarre 2)(jovial 0)(docile 0)(hardi 1)(calme 0)(brave 0)(relax 0)(malin 0)(solo 0)(naïf 0)(timide 0)(malpoli 0)(pressé 0)))        
    (setq init '((bizarre 0)(jovial 0)(docile 0)(hardi 0)(calme 0)(brave 0)))
    (setq init (mise_a_jour_carac init '((jovial 1)(calme 1))))
-           
+   (recup '((bizarre 2)(jovial 6)(docile 2)(hardi 1)(calme 0)) 3)      

@@ -167,7 +167,7 @@
   )
 
 
-;obtention de la liste possédant les caractéristiques entrées en arguments
+;obtention de la liste possedant les caracteristiques entrees en arguments
 (defun questions_avec_carac (lcaracs)
   (let ((lquest) (check 0))
     (dolist(q *questions*)
@@ -185,8 +185,8 @@
   )  
   
 
-;obtention de la liste de question avec seulement les caractères entrées en arguments 
-;Dans notre traitement on pourra peut être avoir besoin de la fonction précédente au cas où aucune question n'est renvoyé ici
+;obtention de la liste de question avec seulement les caracteres entres en arguments 
+;Dans notre traitement on pourra peut être avoir besoin de la fonction precedente au cas où aucune question n'est renvoyé ici
 (defun questions_carac_unique (lcaracs)
   (let ((lquest) (check 0) (longueur 0))
     (dolist(q *questions*)
@@ -204,7 +204,7 @@
     )
   )   
 
-;création liste initiale
+;creation liste initiale
 (defun liste_carac_init ()
   (let ((init '((jovial 0)(bizarre 0)(docile 0)(hardi 0)(calme 0)(brave 0)(relax 0)(malin 0)(solo 0)(naïf 0)(timide 0)(malpoli 0)(pressé 0))))
     (return-from liste_carac_init init)
@@ -218,7 +218,7 @@
     )
   )
 
-;mise à jour liste caractère
+;mise a jour liste caractere
 (defun mise_a_jour_carac (liste_carac carac_result)
   (let ((resultat))
   (dolist (carac carac_result)
@@ -236,7 +236,7 @@
     )
   )
    
-;retourne le cractère qui la le plus de points
+;retourne le caractere qui a le plus de points
 (defun max_pts (liste_carac_pts)
    (setq max (car liste_carac_pts))
    (dolist (carac liste_carac_pts)
@@ -244,7 +244,17 @@
       (setq max carac))
      )
  (return-from max_pts max)
-)
+  )
+
+;retourne le caractere qui a le moins de points
+(defun min_pts (liste_carac_pts)
+  (setq min (car liste_carac_pts))
+   (dolist (carac liste_carac_pts)
+     (if (> (cadr min) (cadr carac))
+         (setq min carac))
+     )
+    (return-from min_pts min)
+  )
    
 ;pose la question du genre
 (defun ask_genre ()
@@ -256,20 +266,20 @@
     )
   
 
-;mise à jour liste question
+;mise a jour liste question
 (defun mise_a_jour_question (lquestion question)
   (let ((resultat))
   (dolist (q lquestion)
     (cond 
-     ((not (equal (car q) (car question)))(push q resulat))
+     ((not (equal (car q) (car question)))(push q resultat))
      (t nil)
      )
     )
-    (return-from mise_a_jour_carac resultat)
+    (return-from mise_a_jour_question resultat)
     )
   )
  
-;fonction service pour récuperer les 5 questions avec le plus de points
+;fonction service pour recuperer les N caracteres avec le plus de points
 (defun recup (list_carac N)
   (let((inter nil )(fin nil)(max)(nb 0))
     (dolist(elem list_carac)
@@ -332,8 +342,9 @@
    (get_caracs_pts (car (questions_sans_carac '(hardi jovial naif bizarre docile))))
    (setq li '((bizarre 10)(hardi 1)(brave 2)(peureux 5)))
    (max_pts li)
+   (min_pts li)
     
    (setq init '((bizarre 2)(jovial 0)(docile 0)(hardi 1)(calme 0)(brave 0)(relax 0)(malin 0)(solo 0)(naïf 0)(timide 0)(malpoli 0)(pressé 0)))        
    (setq init '((bizarre 0)(jovial 0)(docile 0)(hardi 0)(calme 0)(brave 0)))
    (setq init (mise_a_jour_carac init '((jovial 1)(calme 1))))
-   (recup '((bizarre 2)(jovial 6)(docile 2)(hardi 1)(calme 0)) 3)      
+   (recup '((bizarre 2)(jovial 6)(docile 2)(hardi 1)(calme 0)) 3)

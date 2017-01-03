@@ -140,21 +140,21 @@
    (return-from get_caracs lrep)
    )
 
-(defun questions_sans_carac (lcaracs)
+(defun questions_sans_carac (lcaracs lquestions)
   (let ((lquest) (qfinal))
-    (dolist(q *questions*)
+    (dolist(q lquestions)
       (push (car q) lquest)
       )
     (dolist(cr lcaracs)
       (dolist(q lquest)
-      (if (not( null(member cr (get_caracs (get_caracs_pts (choix_question q *questions*))))))
+      (if (not( null(member cr (get_caracs (get_caracs_pts (choix_question q lquestions))))))
           (setq lquest (remove q lquest))
         )
         )
       )
     (loop for q in lquest
         do
-          (push (choix_question q *questions*) qfinal)
+          (push (choix_question q lquestions) qfinal)
           )
     (return-from questions_sans_carac qfinal)
     )
@@ -168,12 +168,12 @@
 
 
 ;obtention de la liste possedant les caracteristiques entrees en arguments
-(defun questions_avec_carac (lcaracs)
+(defun questions_avec_carac (lcaracs lquestions)
   (let ((lquest) (check 0))
-    (dolist(q *questions*)
+    (dolist(q lquestions)
       (setq check 0)
       (dolist(cr lcaracs)
-        (if ( null(member cr (get_caracs (get_caracs_pts (choix_question (car q) *questions*)))))
+        (if ( null(member cr (get_caracs (get_caracs_pts (choix_question (car q) lquestions)))))
             (setq check 1))
         )
       (if(equal check 0)
@@ -187,13 +187,13 @@
 
 ;obtention de la liste de question avec seulement les caracteres entres en arguments
 ;Dans notre traitement on pourra peut être avoir besoin de la fonction precedente au cas où aucune question n'est renvoyé ici
-(defun questions_carac_unique (lcaracs)
+(defun questions_carac_unique (lcaracs lquestions)
   (let ((lquest) (check 0) (longueur 0))
-    (dolist(q *questions*)
+    (dolist(q lquestions)
       (setq check 0)
-      (setq longueur (length (get_caracs (get_caracs_pts (choix_question (car q) *questions*)))))
+      (setq longueur (length (get_caracs (get_caracs_pts (choix_question (car q) lquestions)))))
       (dolist(cr lcaracs)
-        (if ( null(member cr (get_caracs (get_caracs_pts (choix_question (car q) *questions*)))))
+        (if ( null(member cr (get_caracs (get_caracs_pts (choix_question (car q) lquestions)))))
             (setq check 1))
         )
       (if(AND (equal check 0) (equal longueur (length lcaracs)))
@@ -336,6 +336,19 @@
     )
   )
 
+(defun get_genre()
+  (let (reponse)
+    (setq reponse 0)
+    (ask_genre)
+  (cond
+   ((while (or (> reponse 2)(< reponse 1))
+     (format t "~% Veuillez entrez une reponse valide ~%")
+     (setq reponse (parse-integer (read-line))))
+    ))
+  (return-from get_genre reponse)
+  )
+ )
+
 
 #|(while (<= nb_question 4)
       (let ((reponse)(question_actuelle)(carac)(carac_elim))
@@ -396,7 +409,7 @@
       )
     (setq max (max_pts carac))
     (setq caractere (car (max_pts carac)))
-    (setq genre (get_reponse (ask_genre)));il ne prend pas la réponse
+    (setq genre (get_genre))
     (if (= genre 1)
         (dolist (poke *pokemons*)
           (if (equal (caddr poke) caractere)

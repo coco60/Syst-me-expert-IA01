@@ -306,17 +306,36 @@
     )
   )
 
-  (defun recup_question_non_posee (posee)
+;normalement on en a pas besoin...
+(defun questions_carac (liste_carac questions)
+  (let(new)
+    (dolist(carac liste_carac)
+      (dolist(quest questions)
+        (let((caractere (get_caracs (get_caracs_pts quest))))
+         (if(AND (not(member quest new))(member carac caractere))
+             (push quest new)
+           )
+          )
+        )
+      )
+    (return-from questions_carac new)
+    )
+  )
+
+
+
+(defun recup_question_non_posee (posee)
   (let(liste)
     (dolist(q posee)
       (dolist(quest *questions*)
-        (if(AND (not (= q (car quest)))(not(member (car quest) posee)))
+        (if(AND (not (= q (car quest)))(not(member (car quest) posee))(not(member quest liste)))
             (push quest liste))
         )
       )
     (return-from recup_question_non_posee liste)
     )
   )
+
 
 #|(while (<= nb_question 4)
       (let ((reponse)(question_actuelle)(carac)(carac_elim))
@@ -346,27 +365,22 @@
 
 ;programme principal
 (defun principale ()
-  (let (( carac_point '((bizarre 2)(jovial 5)(docile 2)(hardi 2)(calme 1)(brave 0)(relax 0)(malin 0)(solo 0)(naif 0)(timide 0)(malpoli 0)(pressé 0)))(carac_question)(deja_posee)(liste_question *questions*)(nb_question 4))
+  (let ((questions)( carac_point '((bizarre 2)(jovial 5)(docile 2)(hardi 2)(calme 1)(brave 0)(relax 0)(malin 0)(solo 0)(naif 0)(timide 0)(malpoli 0)(pressé 0)))(carac_question)(deja_posee)(liste_question *questions*)(nb_question 4))
 
-      (setq liste_question nil)
-    (dolist(q deja_posee)
-      (dolist(quest *questions*)
-        (if(not (= q (car quest)))
-            (push liste_question))
-        )
-      )
+    (setq liste_question nil)
+    (setq questions (recup_question_non_posee '( 1 6 8 4 12 10 11 55 44 56 52 50)));normalement deja_posee
     (setq carac (recup carac_point (- 8 nb_question)))
-    (while (<= nb_question 8)
+    (while (< nb_question 7)
       (let ((carac_en_plus)(question_actuelle)(reponse))
-        (setq liste_question (questions_carac_unique carac liste_question))
-        (while (= 0 (length liste_question))
-          (setq liste_question (questions_avec_carac carac liste_question))
-          (if(= 0 (length liste_question))
+        (setq liste_question (questions_carac_unique carac questions))
+        (while (equal 0 (length liste_question))
+          (setq liste_question (questions_avec_carac carac questions))
+          (if(equal 0 (length liste_question))
               (progn
                 (setq carac (reverse carac))
-                (pop carac)
+                (setq carac (cdr carac))
                 (setq carac (reverse carac))
-                (setq liste_question (questions_carac_unique carac liste_question))
+                (setq liste_question (questions_carac_unique carac questions))
                 );retirer celui avec le moins de points
             )
           )
@@ -382,7 +396,7 @@
       )
     (setq max (max_pts carac))
     (setq caractere (car (max_pts carac)))
-    (setq genre (get_reponse ask_genre))
+    (setq genre (get_reponse (ask_genre)));il ne prend pas la réponse
     (if (= genre 1)
         (dolist (poke *pokemons*)
           (if (equal (caddr poke) caractere)
@@ -394,6 +408,7 @@
     (return-from principale pokemon)
     )
   )
+
 
 
 

@@ -306,6 +306,18 @@
     )
   )
 
+  (defun recup_question_non_posee (posee)
+  (let(liste)
+    (dolist(q posee)
+      (dolist(quest *questions*)
+        (if(AND (not (= q (car quest)))(not(member (car quest) posee)))
+            (push quest liste))
+        )
+      )
+    (return-from recup_question_non_posee liste)
+    )
+  )
+
 #|(while (<= nb_question 4)
       (let ((reponse)(question_actuelle)(carac)(carac_elim))
         (setq question_actuelle (random_question liste_question))
@@ -331,7 +343,7 @@
     )
     |#
 
-    
+
 ;programme principal
 (defun principale ()
   (let (( carac_point '((bizarre 2)(jovial 5)(docile 2)(hardi 2)(calme 1)(brave 0)(relax 0)(malin 0)(solo 0)(naif 0)(timide 0)(malpoli 0)(pressé 0)))(carac_question)(deja_posee)(liste_question *questions*)(nb_question 4))

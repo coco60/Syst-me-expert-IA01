@@ -76,28 +76,28 @@
                      (Skitty () (pressé))
                      )
   )
- 
- 
+
+
 
 ;;fonctions de services
- 
+
 ;retourne la question correspondant a un numero
 (defun choix_question (num *questions*)
  (nth (- num 1) *questions*)
  )
- 
+
 ;fonction basique retournant le nombre d'element d une liste
 (defun number-of-elements (liste)
   (if (null  liste)
    0
    (+ 1 (number-of-elements (rest liste))))
   )
- 
+
 ;retourne le nombre de reponses d une question
 (defun nb_rep (question)
  (number-of-elements (caddr question))
  )
- 
+
 ;affiche une question avec ses reponses possibles
 (defun affiche_question (question)
  (format t "~% ~s - ~s" (car question) (cadr question))
@@ -106,7 +106,7 @@
   (format t "~%     ~s : ~s" (car rep) (cadr rep))
   )
  )
- 
+
 ;recoit la reponse de l utilisateur a une question
 (defun get_reponse (question)
  (let (reponse)
@@ -119,7 +119,7 @@
   (return-from get_reponse reponse)
   )
  )
- 
+
  ;retourne la liste de caracteres d une question avec leur points
 (defun get_caracs_pts (question)
  (setq lrep '())
@@ -129,7 +129,7 @@
    )
   (return-from get_caracs_pts lrep)
   )
- 
+
  ;retourne la liste de caracteres d une question sans leur points
  (defun get_caracs (lrep_pt)
   (setq lrep '())
@@ -139,7 +139,7 @@
     )
    (return-from get_caracs lrep)
    )
-  
+
 (defun questions_sans_carac (lcaracs)
   (let ((lquest) (qfinal))
     (dolist(q *questions*)
@@ -182,10 +182,10 @@
       )
     (return-from questions_avec_carac (reverse lquest))
     )
-  )  
-  
+  )
 
-;obtention de la liste de question avec seulement les caracteres entres en arguments 
+
+;obtention de la liste de question avec seulement les caracteres entres en arguments
 ;Dans notre traitement on pourra peut être avoir besoin de la fonction precedente au cas où aucune question n'est renvoyé ici
 (defun questions_carac_unique (lcaracs)
   (let ((lquest) (check 0) (longueur 0))
@@ -202,7 +202,7 @@
       )
     (return-from questions_carac_unique (reverse lquest))
     )
-  )   
+  )
 
 ;creation liste initiale
 (defun liste_carac_init ()
@@ -223,7 +223,7 @@
   (let ((resultat))
   (dolist (carac carac_result)
     (dolist (c liste_carac)
-      (cond 
+      (cond
        ((equal (car carac) (car c))
         (setq c (list (car c) (+ (cadr carac) (cadr c))))
         (push c resultat))
@@ -235,7 +235,7 @@
     (return-from mise_a_jour_carac resultat)
     )
   )
-   
+
 ;retourne le caractere qui a le plus de points
 (defun max_pts (liste_carac_pts)
    (setq max (car liste_carac_pts))
@@ -255,7 +255,7 @@
      )
     (return-from min_pts min)
   )
-   
+
 ;pose la question du genre
 (defun ask_genre ()
     (progn
@@ -264,13 +264,13 @@
      (format t "~% 2 : Un garçon")
      )
     )
-  
+
 
 ;mise a jour liste question
 (defun mise_a_jour_question (lquestion question)
   (let ((resultat))
   (dolist (q lquestion)
-    (cond 
+    (cond
      ((not (equal (car q) (car question)))(push q resultat))
      (t nil)
      )
@@ -278,7 +278,7 @@
     (return-from mise_a_jour_question resultat)
     )
   )
- 
+
 ;fonction service pour recuperer les N caracteres avec le plus de points
 (defun recup (list_carac N)
   (let((inter nil )(fin nil)(max)(nb 0))
@@ -305,68 +305,89 @@
       )
     )
   )
-;programme principal
-(defun principale ()
-  (let (( carac_point '((bizarre 2)(jovial 0)(docile 0)(hardi 1)(calme 0)(brave 0)(relax 0)(malin 0)(solo 0)(naïf 0)(timide 0)(malpoli 0)(pressé 0)))(carac_question)(deja_posee)(liste_question *questions*)(nb_question 0))
-    
-    (while (<= nb_question 4)
-      (let ((reponse)(question_actuelle)(carac))
+
+#|(while (<= nb_question 4)
+      (let ((reponse)(question_actuelle)(carac)(carac_elim))
         (setq question_actuelle (random_question liste_question))
         (push (car question_actuelle) deja_posee)
         (affiche_question question_actuelle)
         (setq reponse (get_reponse question_actuelle))
         (setq carac (carac_reponse reponse question_actuelle))
+        (print carac)
         (setq carac_point (mise_a_jour_carac carac_point carac))
+        (print carac_point)
+        (setq carac_elim (get_caracs (get_caracs_pts question_actuelle)))
         (setq liste_question (mise_a_jour_question liste_question question_actuelle))
-        (setq liste_question (questions_sans_carac (carac liste_question)))
+        (print liste_question)
+        (setq liste_question (questions_sans_carac carac_elim liste_question))
+        (print "coucou")
         (setq nb_question (+ 1 nb_question))
-        (if(nil liste_question)
-            (return)
+        (if(> 0  (length liste_question))
+            ((setq nombre nb_question)
+             (setq nb_question 4)
+             )
           )
         )
+    )
+    |#
+
+    
+;programme principal
+(defun principale ()
+  (let (( carac_point '((bizarre 2)(jovial 5)(docile 2)(hardi 2)(calme 1)(brave 0)(relax 0)(malin 0)(solo 0)(naif 0)(timide 0)(malpoli 0)(pressé 0)))(carac_question)(deja_posee)(liste_question *questions*)(nb_question 4))
+
+      (setq liste_question nil)
+    (dolist(q deja_posee)
+      (dolist(quest *questions*)
+        (if(not (= q (car quest)))
+            (push liste_question))
+        )
       )
-    (setq liste_question nil)
     (setq carac (recup carac_point (- 8 nb_question)))
     (while (<= nb_question 8)
       (let ((carac_en_plus)(question_actuelle)(reponse))
-      (while (equal nil liste_question)
-        (setq liste_question (questions_carac_unique carac))
-        (if(equal nil liste_question)
-            (setq liste_question (questions_avec_carac carac))
+        (setq liste_question (questions_carac_unique carac liste_question))
+        (while (= 0 (length liste_question))
+          (setq liste_question (questions_avec_carac carac liste_question))
+          (if(= 0 (length liste_question))
+              (progn
+                (setq carac (reverse carac))
+                (pop carac)
+                (setq carac (reverse carac))
+                (setq liste_question (questions_carac_unique carac liste_question))
+                );retirer celui avec le moins de points
+            )
           )
-        (if(equal liste_question)
-            (pop (reverse carac));retirer celui avec le moins de points
-          )
-        )
-      (setq question_actuelle (random_question liste_question))
-      (push (car question_actuelle) deja_posee)
-      (affiche_question question_actuelle)
-      (setq reponse (get_reponse question_actuelle))
-      (setq carac_en_plus (carac_reponse reponse question_actuelle))
-      (setq carac (mise_a_jour_carac carac carac_en_plus))
-      (setq liste_question (mise_a_jour_question liste_question question_actuelle))
-      (setq nb_question (+ 1 nb_question))
+        (setq question_actuelle (random_question liste_question))
+        (push (car question_actuelle) deja_posee)
+        (affiche_question question_actuelle)
+        (setq reponse (get_reponse question_actuelle))
+        (setq carac_en_plus (carac_reponse reponse question_actuelle))
+        (setq carac (mise_a_jour_carac carac carac_en_plus))
+        (setq liste_question (mise_a_jour_question liste_question question_actuelle))
+        (setq nb_question (+ 1 nb_question))
         )
       )
+    (setq max (max_pts carac))
     (setq caractere (car (max_pts carac)))
     (setq genre (get_reponse ask_genre))
     (if (= genre 1)
-     (dolist (poke *pokemons*)
-      (if (equal (caddr poke) caractere)
-       (setq pokemon (car poke)))))
-     (if (= genre 2)
-      (dolist (poke *pokemons*)
-       (if (equal (cadr poke) caractere)
-        (setq pokemon (car poke)))))
+        (dolist (poke *pokemons*)
+          (if (equal (caddr poke) caractere)
+              (setq pokemon (car poke)))))
+    (if (= genre 2)
+        (dolist (poke *pokemons*)
+          (if (equal (cadr poke) caractere)
+              (setq pokemon (car poke)))))
     (return-from principale pokemon)
-         )
-        )
-    
-         
-  
+    )
+  )
+
+
+
 
    ;;; TEST
-   
+
    (setq l (choix_question 31 *questions*))
    (affiche_question l)
    (get_reponse l)
@@ -381,8 +402,8 @@
    (setq li '((bizarre 10)(hardi 1)(brave 2)(peureux 5)))
    (max_pts li)
    (min_pts li)
-    
-   (setq init '((bizarre 2)(jovial 0)(docile 0)(hardi 1)(calme 0)(brave 0)(relax 0)(malin 0)(solo 0)(naïf 0)(timide 0)(malpoli 0)(pressé 0)))        
+
+   (setq init '((bizarre 2)(jovial 0)(docile 0)(hardi 1)(calme 0)(brave 0)(relax 0)(malin 0)(solo 0)(naïf 0)(timide 0)(malpoli 0)(pressé 0)))
    (setq init '((bizarre 0)(jovial 0)(docile 0)(hardi 0)(calme 0)(brave 0)))
    (setq init (mise_a_jour_carac init '((jovial 1)(calme 1))))
    (recup '((bizarre 2)(jovial 6)(docile 2)(hardi 1)(calme 0)) 3)

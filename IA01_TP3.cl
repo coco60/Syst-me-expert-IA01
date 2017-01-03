@@ -335,7 +335,7 @@
             (setq liste_question (questions_avec_carac carac))
           )
         (if(equal liste_question)
-            (pop (reverse liste_question));retirer celui avec le moins de points
+            (pop (reverse carac));retirer celui avec le moins de points
           )
         )
       (setq question_actuelle (random_question liste_question))
@@ -345,11 +345,24 @@
       (setq carac_en_plus (carac_reponse reponse question_actuelle))
       (setq carac (mise_a_jour_carac carac carac_en_plus))
       (setq liste_question (mise_a_jour_question liste_question question_actuelle))
-        (setq nb_question (+ 1 nb_question))
+      (setq nb_question (+ 1 nb_question))
         )
       )
-    (setq max (max_pts carac))
-    (if(< 1 (length max))
+    (setq caractere (car (max_pts carac)))
+    (setq genre (get_reponse ask_genre))
+    (if (= genre 1)
+     (dolist (poke *pokemons*)
+      (if (equal (caddr poke) caractere)
+       (setq pokemon (car poke)))))
+     (if (= genre 2)
+      (dolist (poke *pokemons*)
+       (if (equal (cadr poke) caractere)
+        (setq pokemon (car poke)))))
+    (return-from principale pokemon)
+         )
+        )
+    
+         
   
 
    ;;; TEST

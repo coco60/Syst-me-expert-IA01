@@ -423,10 +423,30 @@
 
 ;programme principal
 (defun principale ()
-  (let ((questions)( carac_point '((bizarre 1)(jovial 1)(docile 0)(hardi 1)(calme 1)(brave 0)(relax 0)(malin 0)(solo 0)(naif 0)(timide 0)(malpoli 0)(press� 0)))(carac_question)(deja_posee)(liste_question *questions*)(nb_question 4))
-
+  (let ((questions)(carac_point '((bizarre 0)(jovial 0)(docile 0)(hardi 0)(calme 0)(brave 0)(relax 0)(malin 0)(solo 0)(naif 0)(timide 0)(malpoli 0)(press� 0)))(carac_question)(deja_posee)(liste_question *questions*)(nb_question 0))
+  (while (< nb_question 4)
+      (let ((reponse)(question_actuelle)(carac)(carac_elim))
+        (setq question_actuelle (random_question liste_question))
+        (push (car question_actuelle) deja_posee)
+        (affiche_question question_actuelle)
+        (setq reponse (get_reponse question_actuelle))
+        (setq carac (carac_reponse reponse question_actuelle))
+        (setq carac_point (mise_a_jour_carac carac_point carac))
+        (setq carac_elim (get_caracs (get_caracs_pts question_actuelle)))
+        (setq liste_question (mise_a_jour_question liste_question question_actuelle))
+        (setq liste_question (questions_sans_carac carac_elim liste_question))
+        (setq liste_question (check_nil liste_question))
+        (setq nb_question (+ 1 nb_question))
+        (if (and (equal 0  (length liste_question)) (< nb_question 4))
+            (progn 
+              (push (random_question (recup_question_non_posee deja_posee)) liste_question)
+              (push (caar liste_question) deja_posee)
+              )
+          )
+        )
+    )
     (setq liste_question nil)
-    (setq questions (recup_question_non_posee '( 1 6 8 4 12 10 11 55 44 56 52 50)));normalement deja_posee
+    (setq questions (recup_question_non_posee deja_posee))
     (setq carac (recup carac_point (- 8 nb_question)))
     (while (< nb_question 8)
       (let ((carac_en_plus)(question_actuelle)(reponse))
@@ -451,12 +471,10 @@
         (setq carac (mise_a_jour_carac carac carac_en_plus))
         (setq liste_question (mise_a_jour_question liste_question question_actuelle))
         (setq nb_question (+ 1 nb_question))
-        (print carac)
         )
       )
     (setq max (max_pts carac))
     (setq caractere (car (max_pts carac)))
-    (print caractere)
     (setq genre (get_genre))
     (if (= genre 1)
         (dolist (poke *pokemons*)
@@ -470,28 +488,8 @@
     )
   )
 
-;première boucle modifiée
-(while (< nb_question 4)
-      (let ((reponse)(question_actuelle)(carac)(carac_elim))
-        (setq question_actuelle (random_question liste_question))
-        (push (car question_actuelle) deja_posee)
-        (affiche_question question_actuelle)
-        (setq reponse (get_reponse question_actuelle))
-        (setq carac (carac_reponse reponse question_actuelle))
-        (setq carac_point (mise_a_jour_carac carac_point carac))
-        (setq carac_elim (get_caracs (get_caracs_pts question_actuelle)))
-        (setq liste_question (mise_a_jour_question liste_question question_actuelle))
-        (cond
-         ((equal NIL (questions_sans_carac carac_elim liste_question))
-          (setq liste_question (questions_carac_points carac liste_question)))
-         (t (setq liste_question (questions_sans_carac carac_elim liste_question))
-            (setq liste_question (check_nil liste_question)))
-         )
-        (setq nb_question (+ 1 nb_question))
-        )
-    )
 
 
-    ;;; TEST
+;;; TEST
 ;(principale)
 ;(test)

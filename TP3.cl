@@ -410,7 +410,10 @@
         (setq liste_question (check_nil liste_question))
         (setq nb_question (+ 1 nb_question))
         (if (and (equal 0  (length liste_question)) (< nb_question 4))
-            (push (random_question (recup_question_non_posee deja_posee)) liste_question)
+            (progn 
+              (push (random_question (recup_question_non_posee deja_posee)) liste_question)
+              (push (caar liste_question) deja_posee)
+              )
           )
         )
     )

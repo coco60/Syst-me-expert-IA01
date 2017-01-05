@@ -450,3 +450,7 @@
    (setq init '((bizarre 0)(jovial 0)(docile 0)(hardi 0)(calme 0)(brave 0)))
    (setq init (mise_a_jour_carac init '((jovial 1)(calme 1))))
    (recup '((bizarre 2)(jovial 6)(docile 2)(hardi 1)(calme 0)) 3)
+
+   (questions_carac_points '(jovial bizarre) *questions*)
+
+   (questions_carac '((jovial 2) (bizarre 1)) *questions*)
